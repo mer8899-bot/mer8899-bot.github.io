@@ -7,15 +7,21 @@
 </head>
 <body>
   <h1>深蓝</h1>
-
   <p>一个正在观察世界的人。</p>
-
   <hr>
-
-  <article>
-    <h2>2026.08.24</h2>
-    <p>今天开始搭建自己的个人博客。</p>
-  </article>
-
+  <main id="posts"></main>
+  <script>
+    fetch("posts/posts.json")
+      .then(r => r.json())
+      .then(posts => {
+        const container = document.getElementById("posts");
+        posts.forEach(post => {
+          const article = document.createElement("article");
+          article.innerHTML = `<h2>${post.date}</h2><h3>${post.title}</h3><p>${post.content}</p><hr>`;
+          container.appendChild(article);
+        });
+      })
+      .catch(e => console.error("读取文章失败:", e));
+  </script>
 </body>
 </html>
