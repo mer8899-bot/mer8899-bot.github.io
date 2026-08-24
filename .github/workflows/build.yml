@@ -1,0 +1,26 @@
+name: Build Blog
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build posts.json
+        run: node build.js
+
+      - name: Commit posts.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add posts/posts.json
+          git diff --staged --quiet || git commit -m "auto: rebuild posts.json"
+          git push
