@@ -336,20 +336,20 @@ const server = http.createServer((req, res) => {
 
         const { date, time } = getDateInfo();
 
-        const filename = \`\${date}-\${time}.md\`;
+        const filename = `${date}-${time}.md`;
 
         const relativePath = path.join("posts", filename);
         const fullPath = path.join(ROOT, relativePath);
 
         const markdown =
-\`---
-title: \${title}
-date: \${date}
+`---
+title: ${title}
+date: ${date}
 type: thought
 ---
 
-\${content}
-\`;
+${content}
+`;
 
         fs.writeFileSync(fullPath, markdown, "utf8");
 
@@ -364,7 +364,7 @@ type: thought
         run("git", [
           "commit",
           "-m",
-          \`add: \${date} \${title}\`
+          `add: ${date} ${title}`
         ]);
 
         run("git", ["push"]);
@@ -399,7 +399,7 @@ type: thought
 
 server.listen(PORT, HOST, () => {
 
-  const url = \`http://\${HOST}:\${PORT}\`;
+  const url = `http://${HOST}:${PORT}`;
 
   console.log("");
   console.log("✓ 深蓝写作后台已启动");
@@ -410,7 +410,7 @@ server.listen(PORT, HOST, () => {
   console.log("");
 
   if (process.platform === "darwin") {
-    exec(\`open "\${url}"\`);
+    exec(`open "${url}"`);
   }
 
 });
