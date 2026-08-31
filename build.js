@@ -3,6 +3,17 @@ const path = require('path');
 
 const postsDir = './posts';
 
+function parseMetaValue(value) {
+  if (value.startsWith('"') && value.endsWith('"')) {
+    try {
+      return JSON.parse(value);
+    } catch (_error) {
+      return value;
+    }
+  }
+  return value;
+}
+
 const files = fs.readdirSync(postsDir)
   .filter(f => f.endsWith('.md'))
   .sort()
@@ -20,16 +31,18 @@ const posts = files.map(filename => {
       if (colonIdx > -1) {
         const key = line.slice(0, colonIdx).trim();
         const val = line.slice(colonIdx + 1).trim();
-        meta[key] = val;
+        meta[key] = parseMetaValue(val);
       }
     });
     body = match[2].trim();
   }
 
   return {
+    id: filename.replace(/\.md$/, ''),
     title: meta.title || filename.replace('.md', ''),
     date: meta.date || filename.replace('.md', ''),
     type: meta.type || 'thought',
+    excerpt: body.replace(/[#>*_`\[\]-]/g, '').replace(/\s+/g, ' ').trim().slice(0, 96),
     content: body
   };
 });

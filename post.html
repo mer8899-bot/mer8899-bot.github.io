@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f4">
+  <meta name="description" content="深蓝的文章">
+  <title>文章 · 深蓝</title>
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <div class="site-shell reading-shell">
+    <header class="site-header">
+      <a class="site-name" href="./" aria-label="返回深蓝首页">深蓝</a>
+      <nav class="site-nav" aria-label="文章导航"><a href="./">全部文章</a></nav>
+    </header>
+    <main>
+      <article class="article-view" aria-labelledby="articleTitle">
+        <header class="article-header">
+          <a class="back-link" href="./">← 返回</a>
+          <time id="articleDate"></time>
+          <h1 id="articleTitle">正在打开文章…</h1>
+        </header>
+        <div class="article-body" id="articleBody"></div>
+      </article>
+    </main>
+    <footer class="site-footer"><span>读到这里</span><a href="./">回到首页</a></footer>
+  </div>
+  <script src="assets/markdown.js"></script>
+  <script src="assets/post.js"></script>
+</body>
+</html>

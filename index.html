@@ -2,28 +2,44 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f4">
+  <meta name="description" content="深蓝，一个正在观察世界的人。">
   <title>深蓝</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <h1>深蓝</h1>
-  <p>一个正在观察世界的人。</p>
-  <hr>
-  <main id="posts"></main>
-  <script>
-    fetch("posts/posts.json?v=" + Date.now(), {
-      cache: "no-store"
-    })
-      .then(r => r.json())
-      .then(posts => {
-        const container = document.getElementById("posts");
-        posts.forEach(post => {
-          const article = document.createElement("article");
-          article.innerHTML = `<h2>${post.date}</h2><h3>${post.title}</h3><p>${post.content}</p><hr>`;
-          container.appendChild(article);
-        });
-      })
-      .catch(e => console.error("读取文章失败:", e));
-  </script>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="site-name" href="./" aria-label="深蓝首页">深蓝</a>
+      <nav class="site-nav" aria-label="主要导航">
+        <a class="active" href="#文章">文章</a>
+        <a href="#关于">关于</a>
+      </nav>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="siteTitle">
+        <p class="hero-kicker">Notes on a changing world</p>
+        <h1 id="siteTitle">一个正在<br>观察世界的人。</h1>
+        <p class="hero-note">写下生活的纹理、尚未想明白的问题，和偶尔抵达的答案。</p>
+      </section>
+      <section class="posts-section" id="文章" aria-labelledby="postsTitle">
+        <div class="section-heading">
+          <h2 id="postsTitle">最近书写</h2>
+          <span id="postCount" aria-live="polite"></span>
+        </div>
+        <div class="posts-list" id="posts"><p class="loading">正在翻开文章…</p></div>
+      </section>
+      <section class="about-section" id="关于" aria-labelledby="aboutTitle">
+        <p class="section-label">About</p>
+        <div>
+          <h2 id="aboutTitle">深蓝</h2>
+          <p>这是一个个人写作空间。没有固定主题，只记录真正让我停下来看的事。</p>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer"><span>© 2026 深蓝</span><a href="write/">写作入口</a></footer>
+  </div>
+  <script src="assets/home.js"></script>
 </body>
 </html>
