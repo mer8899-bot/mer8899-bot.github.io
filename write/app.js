@@ -21,6 +21,7 @@
   let csrfToken = '';
   let saveTimer;
   let publishing = false;
+  let pendingIdempotencyKey = '';
 
   function apiUrl(path) {
     return `${apiOrigin}${path}`;
@@ -43,6 +44,7 @@
   }
 
   function scheduleSave() {
+    if (!publishing) pendingIdempotencyKey = '';
     saveStatus.textContent = '保存中…';
     window.clearTimeout(saveTimer);
     saveTimer = window.setTimeout(persistDraft, 350);
@@ -118,7 +120,7 @@
         headers: {
           'Content-Type': 'application/json',
           'X-CSRF-Token': csrfToken,
-          'Idempotency-Key': window.crypto.randomUUID()
+          'Idempotency-Key': pendingIdempotencyKey || (pendingIdempotencyKey = window.crypto.randomUUID())
         },
         body: JSON.stringify({ title: cleanTitle, content: cleanContent })
       });
@@ -127,6 +129,7 @@
 
       window.localStorage.removeItem(DRAFT_TITLE_KEY);
       window.localStorage.removeItem(DRAFT_CONTENT_KEY);
+      pendingIdempotencyKey = '';
       title.value = '';
       content.value = '';
       updateWordCount();
