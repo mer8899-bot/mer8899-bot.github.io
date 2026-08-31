@@ -17,7 +17,8 @@ function loadConfig(env = process.env) {
     port: Number(env.PORT || origin.port || 8787),
     host: String(env.HOST || (env.RENDER ? '0.0.0.0' : '127.0.0.1')),
     repoOwner: String(env.REPO_OWNER || 'mer8899-bot'),
-    repoName: String(env.REPO_NAME || 'mer8899-bot.github.io')
+    repoName: String(env.REPO_NAME || 'mer8899-bot.github.io'),
+    repoBranch: String(env.REPO_BRANCH || 'main')
   };
 }
 

@@ -27,3 +27,5 @@ services:
         value: mer8899-bot
       - key: REPO_NAME
         value: mer8899-bot.github.io
+      - key: REPO_BRANCH
+        value: codex/public-writer-v1

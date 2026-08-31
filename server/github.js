@@ -51,6 +51,7 @@ function createGitHubPublisher(config, fetchImpl = fetch) {
         },
         body: JSON.stringify({
           message: `add: ${article.date} ${article.title}`,
+          branch: config.repoBranch,
           content: Buffer.from(article.markdown, 'utf8').toString('base64')
         })
       });
