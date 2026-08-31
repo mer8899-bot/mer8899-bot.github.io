@@ -26,7 +26,7 @@ function setup(userId = 12345) {
       return { path: article.path, commitSha: 'abc123' };
     }
   };
-  const app = createAuthApp({ config, publisher, oauthClient: {} });
+  const app = createAuthApp({ config, publisher, oauthClient: {}, persistArticle() {} });
   const cookie = app.issueSessionCookie({ id: userId, login: 'author' }).split(';', 1)[0];
   return { app, cookie, calls: () => calls };
 }

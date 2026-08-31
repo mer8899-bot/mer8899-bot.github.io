@@ -2,6 +2,7 @@ const { createArticle } = require('./article');
 const { authConfigured, publishConfigured } = require('./config');
 const { parseCookies, serializeCookie } = require('./cookies');
 const { createGitHubPublisher } = require('./github');
+const { persistPublishedArticle } = require('./local-posts');
 const { createOAuthClient } = require('./oauth');
 const { createTokenCodec, randomToken, safeEqual } = require('./security');
 
@@ -21,7 +22,7 @@ function redirect(location, cookies = []) {
   return new Response(null, { status: 302, headers });
 }
 
-function createAuthApp({ config, fetchImpl = fetch, now = () => Date.now(), oauthClient, publisher } = {}) {
+function createAuthApp({ config, fetchImpl = fetch, now = () => Date.now(), oauthClient, publisher, persistArticle = persistPublishedArticle } = {}) {
   const configured = authConfigured(config);
   const codec = configured ? createTokenCodec(config.sessionSecret, now) : null;
   const oauth = oauthClient || (configured ? createOAuthClient(config, fetchImpl) : null);
@@ -67,12 +68,18 @@ function createAuthApp({ config, fetchImpl = fetch, now = () => Date.now(), oaut
   async function publishOnce(idempotencyKey, article) {
     const existing = publishTasks.get(idempotencyKey);
     if (existing && existing.expiresAt > now()) return existing.promise;
-    const promise = publishService.publish(article).then(result => ({
-      ok: true,
-      path: result.path,
-      commitSha: result.commitSha,
-      status: 'submitted'
-    }));
+    const promise = publishService.publish(article).then(result => {
+      // Render serves the checked-out filesystem directly. Refresh its local
+      // generated index immediately after the GitHub write so the new post is
+      // visible without waiting for another deployment.
+      persistArticle(article);
+      return {
+        ok: true,
+        path: result.path,
+        commitSha: result.commitSha,
+        status: 'submitted'
+      };
+    });
     publishTasks.set(idempotencyKey, { expiresAt: now() + 15 * 60 * 1000, promise });
     try {
       return await promise;

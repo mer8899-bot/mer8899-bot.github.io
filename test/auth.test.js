@@ -78,3 +78,34 @@ test('OAuth state mismatch is rejected before token exchange', async () => {
   ));
   assert.equal(response.status, 400);
 });
+
+test('successful publish refreshes the served post index', async () => {
+  let persisted;
+  const app = createAuthApp({
+    config,
+    oauthClient: oauthFor({ id: 12345, login: 'author' }),
+    publisher: { async publish(article) { return { path: article.path, commitSha: 'commit-sha' }; } },
+    persistArticle(article) { persisted = article; }
+  });
+  const oauthCookie = await beginFlow(app);
+  const callback = await app.handle(new Request(
+    `${config.appOrigin}/auth/github/callback?code=ok&state=known-state`,
+    { headers: { Cookie: oauthCookie } }
+  ));
+  const sessionCookie = callback.headers.get('set-cookie').match(/shenlan_session=[^;]+/)[0];
+  const session = await app.handle(new Request(`${config.appOrigin}/api/session`, {
+    headers: { Cookie: sessionCookie }
+  })).then(response => response.json());
+  const response = await app.handle(new Request(`${config.appOrigin}/api/publish`, {
+    method: 'POST',
+    headers: {
+      Cookie: sessionCookie,
+      Origin: config.appOrigin,
+      'x-csrf-token': session.csrfToken,
+      'idempotency-key': 'publish-test-key-123456'
+    },
+    body: JSON.stringify({ title: '新文章', content: '正文' })
+  }));
+  assert.equal(response.status, 201);
+  assert.equal(persisted.title, '新文章');
+});
