@@ -27,3 +27,16 @@ test('example environment file contains names, not assigned secrets', () => {
     assert.match(source, new RegExp(`^${name}=$`, 'm'));
   }
 });
+
+test('Render deployment keeps credentials out of the blueprint', () => {
+  const source = fs.readFileSync(path.join(root, 'render.yaml'), 'utf8');
+  for (const name of [
+    'GITHUB_APP_PRIVATE_KEY',
+    'GITHUB_CLIENT_SECRET',
+    'AUTHORIZED_GITHUB_USER_ID'
+  ]) {
+    const block = source.slice(source.indexOf(`key: ${name}`));
+    assert.match(block.split('\n').slice(0, 2).join('\n'), /sync: false/);
+  }
+  assert.match(source, /key: SESSION_SECRET\n\s+generateValue: true/);
+});

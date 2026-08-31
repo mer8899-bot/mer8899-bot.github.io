@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: shenlan-writer
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/session
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: GITHUB_APP_ID
+        sync: false
+      - key: GITHUB_APP_PRIVATE_KEY
+        sync: false
+      - key: GITHUB_INSTALLATION_ID
+        sync: false
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+      - key: AUTHORIZED_GITHUB_USER_ID
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: REPO_OWNER
+        value: mer8899-bot
+      - key: REPO_NAME
+        value: mer8899-bot.github.io

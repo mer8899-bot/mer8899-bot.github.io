@@ -6,6 +6,7 @@
   "scripts": {
     "build": "node build.js",
     "dev": "node server/index.js",
+    "start": "node server/index.js",
     "test": "node --test",
     "editor": "node editor.js"
   },
