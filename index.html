@@ -11,7 +11,9 @@
   <hr>
   <main id="posts"></main>
   <script>
-    fetch("posts/posts.json")
+    fetch("posts/posts.json?v=" + Date.now(), {
+      cache: "no-store"
+    })
       .then(r => r.json())
       .then(posts => {
         const container = document.getElementById("posts");
