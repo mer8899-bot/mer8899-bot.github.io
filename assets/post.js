@@ -4,6 +4,9 @@
   const title = document.getElementById('articleTitle');
   const date = document.getElementById('articleDate');
   const body = document.getElementById('articleBody');
+  function setMeta(selector, value) {
+    document.querySelector(selector).content = value;
+  }
   function showMissing() {
     title.textContent = '没有找到这篇文章';
     date.textContent = '';
@@ -19,7 +22,12 @@
       const post = posts.find(item => item.id === id);
       if (!post) return showMissing();
       document.title = `${post.title} · 深蓝`;
-      document.querySelector('meta[name="description"]').content = post.excerpt || post.content.slice(0, 96);
+      const description = post.excerpt || post.content.slice(0, 96);
+      setMeta('meta[name="description"]', description);
+      setMeta('meta[property="og:title"]', post.title);
+      setMeta('meta[property="og:description"]', description);
+      setMeta('meta[name="twitter:title"]', post.title);
+      setMeta('meta[name="twitter:description"]', description);
       title.textContent = post.title;
       date.dateTime = post.date;
       date.textContent = post.date.replace(/-/g, '.');
